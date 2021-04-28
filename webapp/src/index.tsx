@@ -13,6 +13,7 @@ interface PostData {
     user?: string;
     reply_to?: number;
     content?: string;
+    likes?: number;
 };
 
 interface PostFormState {
@@ -33,7 +34,8 @@ class PostForm extends React.Component<{}, PostFormState> {
                 id: 0,
                 user: 'bob',
                 reply_to: 0,
-                content: 'This is a test'
+                content: 'This is a test',
+                likes: 0
             },
             error: '',
         };
@@ -107,6 +109,14 @@ class PostForm extends React.Component<{}, PostFormState> {
                             onChange={e => this.setData({ content: e.target.value })}
                         /></td>
                     </tr>
+                    <tr>
+                        <td>Likes</td>
+                        <td><input
+                            style={{ width: 500 }}
+                            value={this.state.data.likes}
+                            onChange={e => this.setData({ likes: +e.target.value })}
+                        /></td>
+                    </tr>
                 </tbody>
             </table>
             <br />
@@ -135,14 +145,15 @@ class Messages extends React.Component<{}, { content: string }> {
                     json: true, code: 'talk', scope: '', table: 'message', limit: 1000,
                 });
                 let content =
-                    'id          reply_to      user          content\n' +
-                    '=============================================================\n';
+                    'id          reply_to      user          content                    likes\n' +
+                    '============================================================================\n';
                 for (let row of rows.rows)
                     content +=
                         (row.id + '').padEnd(12) +
                         (row.reply_to + '').padEnd(12) + '  ' +
                         row.user.padEnd(14) +
-                        row.content + '\n';
+                        row.content.padEnd(30) +
+                        (row.likes + '').padEnd(12) + '\n';
                 this.setState({ content });
             } catch (e) {
                 if (e.json)
